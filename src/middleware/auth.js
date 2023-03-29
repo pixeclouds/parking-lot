@@ -1,4 +1,4 @@
-const { verifyToken } = require("../../utils/token")
+const { verifyToken } = require("../utils/token")
 
 //check if user is signed in
 exports.authenticate = async (req, res, next) => {
