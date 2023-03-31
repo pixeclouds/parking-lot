@@ -1,13 +1,13 @@
 const mongoose = require("mongoose")
 
 const Schema = mongoose.Schema
-const spaceSchema = new Schema({
+const parkingSpaceSchema = new Schema({
     _id: {
         type: String
     },
-    garage_id: {
+    garageId: {
         type: Schema.Types.String,
-        ref : "garage"
+        ref : "Garage"
     },
     coordinates: {
         type: [Number]
@@ -33,7 +33,7 @@ const garageSchema = new Schema({
     }
 })
 
-const Space = mongoose.model("space", spaceSchema)
-const Garage = mongoose.model("garage", garageSchema)
+const parkingSpace = mongoose.model("parkingSpace", parkingSpaceSchema)
+const Garage = mongoose.model("Garage", garageSchema)
 
-module.exports = { Space, Garage }
+module.exports = { parkingSpace, Garage }

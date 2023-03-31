@@ -1,4 +1,4 @@
-const { getAllGarages, getSpaces } = require("./repository")
+const { getAllGarages, getSpacesinGarage} = require("./repository")
 const {getNearbyGarage} = require("../../utils/distance")
 
 // get all garages on the parking lots system
@@ -28,5 +28,17 @@ exports.getNearby = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.json({ error: err.message})
+    }
+}
+
+
+// retrieve all the unoccupied and available spaces in a particular garage
+exports.getAvailableSpaces = async (req, res) => {
+    try {
+       let { garageId } = req.query
+       let spaces = await getSpacesinGarage(garageId)
+       res.json(spaces)
+    } catch (error) {
+        
     }
 }

@@ -8,6 +8,8 @@ const calculateDistance = (garageCoordinates, userCoordinates) => {
     return distance
 }
 
+
+// fucntion to determine which garage is closest to the users current location
 exports.getNearbyGarage = (garages, currentCoordinates) => {
     // calculate the distances between the user location and all the garages
     let distances = garages.map(garage => calculateDistance(garage.coordinates, currentCoordinates))
@@ -26,4 +28,14 @@ exports.getNearbyGarage = (garages, currentCoordinates) => {
     }
     return nearbyGarage
 
+}
+
+// function to determine if the vehicle is close enough (100m) to a reserved space
+exports.isVehicleClose = (vehicleCoordinates, garageCoordinates) => {
+    let distance = calculateDistance(vehicleCoordinates, garageCoordinates)
+    if ( distance <= 100 ){
+        return true
+    }else {
+        return false
+    }
 }

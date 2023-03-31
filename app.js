@@ -3,12 +3,14 @@ const express = require("express")
 const app = express()
 
 const userRouter = require("./src/packages/user/routes")
-const spaceRouter = require("./src/packages/garage/routes")
+const garageRouter = require("./src/packages/garage/routes")
+const reservationRouter = require("./src/packages/reservation/routes")
 const {connectToDB} = require("./src/config/database")
 
 app.use(express.json())
 app.use(userRouter)
-app.use(spaceRouter)
+app.use(garageRouter)
+app.use(reservationRouter)
 
 
 

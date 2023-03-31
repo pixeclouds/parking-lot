@@ -1,10 +1,9 @@
-const spaceRouter = require("express").Router()
-const { getSpaces, getGarages, getNearby } = require("./controller")
+const garageRouter = require("express").Router()
+const { getGarages, getNearby, getAvailableSpaces } = require("./controller")
 
 // spaceRouter.get("/spaces", getSpaces)
-spaceRouter.get("/garages", getGarages)
-spaceRouter.get("/garages/nearby", getNearby)
+garageRouter.get("/garages", getGarages)
+garageRouter.get("/garages/nearby", getNearby)
+garageRouter.get("/garages/spaces", getAvailableSpaces)
 
-
-
-module.exports = spaceRouter
+module.exports = garageRouter
