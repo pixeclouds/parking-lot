@@ -23,3 +23,10 @@ exports.verifyToken = async(token) => {
 
     return user
 }
+
+exports.generateVerificationLink = async (user) => {
+    let token = jwt.sign(user, SECRET, { expiresIn: "24h"})
+    let HOST = process.env.HOST
+    let link = `${HOST}/user/verify-mail/${token}`
+    return link
+}

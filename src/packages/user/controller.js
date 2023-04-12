@@ -1,9 +1,11 @@
-const { getUser, createNewUser, checkIfUserExists } = require("./repository.js")
-const { generateToken } = require("../../utils/token")
+const { getUser, createNewUser, checkIfUserExists, activateAccount } = require("./repository.js")
+const { generateToken, generateVerificationLink, verifyToken } = require("../../utils/token")
 const { validateInput } = require("../../utils/validator")
 const { userValidatorSchema } = require("./schema")
 const { hashPassword, comparePasswords } = require("../../utils/hasher")
-exports.login = async (req, res ) => {
+const { sendVerificationMail } = require("../../services/email/index.js")
+
+exports.signin = async (req, res ) => {
     let { email, password } = req.body
 
     try {
@@ -13,18 +15,20 @@ exports.login = async (req, res ) => {
             throw Error
         }
         user = await getUser(email)
+        if (!user){
+            throw new Error("Account not found. Sign up instead")
+        }
+        // check if account is activated
+        if (user.status == "inactive"){
+            throw new Error("Account not activated. Verify your email to active your account")
+        }
         let password2 = user.password
-
         //check for duplicate
         if(!user || !(await comparePasswords(password, password2))){
             throw new Error("Invalid username or password")
         }
-
         //filter result
-        user = {
-            _id: user._id,
-        }
-
+        user = { _id: user._id, }
         //generate token
         let token = await generateToken(user)
 
@@ -39,7 +43,7 @@ exports.login = async (req, res ) => {
 }
 
 exports.signup = async (req, res) => {
-    let { email, password } = req.body
+    let { firstname, email, password } = req.body
 
     try {
         //validate input
@@ -53,19 +57,20 @@ exports.signup = async (req, res) => {
         if (user){
             throw Error('User already exists')
         }
-
         //hash password
         password = await hashPassword(password)
         //create new user
-        user = await createNewUser(email, password)
-
-        //generate token
-        let token = await generateToken(user)
-
-        res.status(200).json({ 
-            token
-        })
-        
+        user = await createNewUser(firstname, email, password)
+        //generate verification link
+        userToken = { user: user._id}
+        let link = await generateVerificationLink(userToken)
+        // send confirmation mail
+        let emailSent = await sendVerificationMail(user.firstname, user.email, link)
+        if (emailSent == true) {
+            res.status(200).json({ 
+                "Message": "Verification mail sent"
+            })
+        }
     } catch (err) {
         res.status(400).json({
             "Error": err.message
@@ -73,7 +78,21 @@ exports.signup = async (req, res) => {
     }
 }
 
-
+exports.verifyAccount = async (req, res) => {
+    try {
+        let { link } = req.params
+        let user = await verifyToken(link)
+        await activateAccount(user.user)
+        res.json({
+            "Message": "Email verifed. Proceed to login"
+        })
+    } catch (err) {
+        res.status(400).json({
+            "Error": err.message
+        })
+        
+    }
+}
 
 
 

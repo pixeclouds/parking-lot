@@ -7,24 +7,25 @@ exports.getReservation = async (id) => {
                       .populate("parkingSpaceId")
 }
 
+exports.getAllReservation = async () => {
+    return Reservation.find()
+                      
+}
+
+exports.getParking = async (id) => {
+    return Reservation.findById(id)
+}
+
 exports.reserveSpace = async (userId, spaceId) => {
     let _id = v4()
     let newReservation = new Reservation({_id, userId: userId, parkingSpaceId: spaceId})
     newReservation.save()
-    // update space availability status
-    // let space = await parkingSpace.findById(spaceId)
-    // space.available = false
-    // space.save()
     return newReservation
 }
 
-exports.updateStatus = async (id) => {
-    console.log(id)
-    let status = await parkingSpace.findById(id)
-    console.log(status)
-    status.availabity = false
-    status.save()
-    return status
+// update the availability status of a parking space
+exports.updateSpaceStatus = async (id, status) => {
+    await parkingSpace.updateOne({_id: id}, {available : status})
 }
 
 exports.checkIntoSpace = async (id) => {
@@ -37,10 +38,11 @@ exports.checkIntoSpace = async (id) => {
 }
 
 exports.checkOutFromSpace = async (id) => {
-     // document check out time
+    // document check out time
     let endTime = Date.now()
     let checkout = await Reservation.findById(id)
     checkout.endTime = endTime
+    checkout.active = false
     checkout.save()
     return checkout
 }

@@ -33,7 +33,7 @@ exports.getNearbyGarage = (garages, currentCoordinates) => {
 // function to determine if the vehicle is close enough (100m) to a reserved space
 exports.isVehicleClose = (vehicleCoordinates, garageCoordinates) => {
     let distance = calculateDistance(vehicleCoordinates, garageCoordinates)
-    if ( distance <= 100 ){
+    if ( distance <= 50 ){
         return true
     }else {
         return false

@@ -16,7 +16,7 @@ exports.getGarages = async (req, res) => {
 exports.getNearby = async (req, res) => {
 
     try {
-        let { lat, long } = req.body // user current coordinates
+        let { lat, long } = req.query // user current coordinates
         let coordinates = [lat, long]
         let garages = await getAllGarages()
         
@@ -36,9 +36,14 @@ exports.getNearby = async (req, res) => {
 exports.getAvailableSpaces = async (req, res) => {
     try {
        let { garageId } = req.query
+    //    console.log(garageId)
        let spaces = await getSpacesinGarage(garageId)
+    //    console.log(spaces)
+       if (spaces.length == 0){
+        throw Error("No available space in the garage. Check other nearby garages")
+       }
        res.json(spaces)
-    } catch (error) {
-        
+    } catch (err) {
+        res.json({ "message": err.message})
     }
 }

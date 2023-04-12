@@ -1,13 +1,14 @@
-const { reserveSpace, getReservation, checkIntoSpace, checkOutFromSpace, updateStatus }= require("./repository")
+const { reserveSpace, getReservation, checkIntoSpace, checkOutFromSpace, updateSpaceStatus }= require("./repository")
 const { isVehicleClose } = require("../../utils/distance")
-const { locks } = require("../../services/locks")
+const { locks } = require("../../services/locks/index")
+const { initializePay } = require("../payment/repository")
 
 exports.reserve = async (req, res) => {
     try {
         let { userId, spaceId } = req.query
         let reserved = await reserveSpace(userId, spaceId) 
-        let updated = await updateStatus(spaceId)
-        console.log(updated)
+        // update space availabilty status
+        await updateSpaceStatus(spaceId, false)
         res.json({
             "Message": "parking space reserved",
             "reservationId": reserved._id
@@ -35,8 +36,8 @@ exports.checkIn = async (req, res) => {
             await locks(parkingSpaceId._id)
             let checkedin = await checkIntoSpace(reservationId)
             res.json({
-                "Message": "Check in success",
-                "Check-in Time": checkedin.startTime      
+                "message": "Check in success",
+                "check-in time": checkedin.startTime      
             })
         }
         else{
@@ -50,13 +51,69 @@ exports.checkIn = async (req, res) => {
 }
 
 
+
+
+
+
 exports.checkOut = async (req, res) => {
     try {
         let { reservationId } = req.query
         let checkout = await checkOutFromSpace(reservationId)
-        // redirect to make payment
-        console.log("redirecting to payments", checkout)
+        // calculate amount to be paid by user
+        let duration = Math.floor((checkout.endTime - checkout.startTime)/60000)  // duration in minutes
+        let unitAmount = process.env.UNIT_SPACE_BILL
+        let amount = duration * unitAmount
+
+        
+        console.log("duration", duration, "amount", amount)
+
+        // initialize and write record to payment
+        let payment = await initializePay(reservationId, amount, duration)
+        console.log(payment)
+
+        res.json({
+            "message": "make payments",
+            data: payment
+        })
     } catch (err) {
         res.json({ Error: err.Message})
     }
 }
+
+exports.exit = async (req, res) => {
+    try {
+        let { payId } = req.query
+
+        let { reservationId } = await getPay(payId)
+        let exit = getParking(reservationId)
+         // update space availabilty status
+        await updateSpaceStatus(exit.parkingSpaceId, true)
+        // run command to open space locks
+        await locks(exit.parkingSpaceId)
+
+        res.json({
+            "Message": "Opening locks... Bye"
+        })
+
+    } catch (err) {
+        res.json({ Error: err.Message})
+        
+    }
+}
+
+// exports.checkOut = async (req, res) => {
+//     try {
+//         let { reservationId } = req.query
+//         let checkout = await get(reservationId)
+//         // update space availabilty status
+//         let spaceId =  checkout.parkingSpaceId
+//         await updateSpaceStatus(spaceId, true)
+//         // redirect to make payment
+//         console.log("redirecting to payments", checkout)
+//         res.json({
+//             "message": "check out success. "
+//         })
+//     } catch (err) {
+//         res.json({ Error: err.Message})
+//     }
+// }

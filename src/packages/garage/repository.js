@@ -6,5 +6,7 @@ exports.getAllGarages = async() => {
 }
  
 exports.getSpacesinGarage = async (garageId) => {
-    return await parkingSpace.findAll({ garageId: garageId, available: true })
+    let space = await parkingSpace.find({ garageId: garageId, available: true })
+    console.log("repo",space)
+    return space
 }

@@ -9,15 +9,23 @@ const userShema = new Schema({
         type: String,
         default: v4()
     },
+    firstname: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     password: {
         type: String,
-        require: true
+        required: true
     }, 
+    status: {
+        type: String,
+        default: "inactive"
+    },
     createdAt: {
         type: Date,
         default: Date.now
