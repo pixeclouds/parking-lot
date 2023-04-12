@@ -5,9 +5,9 @@ const { dumpPayData } = require("./payment/controller")
 
 
 // run a cron job every 12 hours to dump resevation data into Elastic Search
-const reservationJob = cron.schedule('', async () => {
+const reservationJob = cron.schedule('*/1 * * * *', async () => {
     try {
-        dumpReservationData()
+        await dumpReservationData()
     } catch (err) {
         console.log("Cron job error: ", err.message)
     }
@@ -15,14 +15,13 @@ const reservationJob = cron.schedule('', async () => {
 
 
 // run a cron job every 24 hours to dump payment data into Elastic Search
-const paymentJob = cron.schedule('', async () => {
+const paymentJob = cron.schedule('*/2 * * * *', async () => { 
     try {
-        dumpPayData
+        await dumpPayData()
     } catch (err) {
         console.log("Cron job error: ", err.message)
     }
 })
-
 
 exports.startJOb = async () => {
     reservationJob.start()

@@ -95,4 +95,34 @@ exports.verifyAccount = async (req, res) => {
 }
 
 
+exports.resendVerificationMail = async (req, res) => {
+    try {
+        let { email } = req.body
+        let user = await checkIfUserExists(email)
+
+        // check if account is activated
+        if(!user || user.status == "active"){
+            throw Error("Account doesn't exists")
+        }
+
+        //generate verification link
+        userToken = { user: user._id}
+        let link = await generateVerificationLink(userToken)
+        
+        // send confirmation mail
+        let emailSent = await sendVerificationMail(user.firstname, user.email, link)
+        if (emailSent == true) {
+            res.status(200).json({ 
+                "Message": "Verification mail sent"
+            })
+        }
+    } catch (err) {
+        res.status(400).json({
+            "Error": err.message
+        })
+        
+    }
+}
+
+
 

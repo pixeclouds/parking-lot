@@ -24,10 +24,10 @@ exports.checkIfDocExistonElasticSearch = async (data) => {
     });
 
   if(result){
-    console.log(`${data.payId} exists on ES`)
+    console.log(`pay-${data.payId} exists on ES`)
     return true
   }else {
-    console.log(`${data.payId} DOES NOT exists on ES`)
+    console.log(`pay-${data.payId} DOES NOT exists on ES`)
 
     return false
   }

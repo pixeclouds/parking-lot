@@ -7,7 +7,7 @@ const { formatReservationData } = require("./utils")
 
 
 // function to dump inactive reservtaion records into elastic search
-exports.dumpReservationData = async  (req, res) => {
+exports.dumpReservationData = async () => {
 let reservations = await getInactiveReservations()
 // check if returned reservation array is empty
 if(reservations.length > 0){

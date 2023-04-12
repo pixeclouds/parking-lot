@@ -7,7 +7,7 @@ const { formatPaymentData } = require("./utils")
 
 
 // function to dump successful payments records into elastic search
-exports.dumpPayData = async  (req, res) => {
+exports.dumpPayData = async() => {
 let payments = await getSuccessfulPayments()
 // check if returned payments array is empty
 if(payments.length > 0){

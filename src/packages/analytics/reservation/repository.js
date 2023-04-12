@@ -24,10 +24,10 @@ exports.checkIfDocExistonElasticSearch = async (data) => {
     });
 
   if(result){
-    console.log(`${data.reservationId} exists on ES`)
+    console.log(`reserve-${data.reservationId} exists on ES`)
     return true
   }else {
-    console.log(`${data.reservationId} DOES NOT exists on ES`)
+    console.log(`reserve-${data.reservationId} DOES NOT exists on ES`)
 
     return false
   }
