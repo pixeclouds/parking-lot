@@ -9,7 +9,6 @@ exports.makePayment = async (req, res) => {
         let payUrl = await stripePayment(payId, amount)
 
         // res.redirect(payUrl)
-        console.log(payUrl)
         res.json(payUrl)
 
     } catch (err) {
@@ -24,13 +23,12 @@ exports.successPayment = async (req, res) => {
     try {
         let { payId } = req.query
         await updatePaymentStatus(payId, true)
+        res.redirect(`${HOST}/reservation/exit?payId=${payId}`)
 
-
+    } catch (err) {
         res.json({
-            "Message": "Payment was sucessful"
+            "Error": err.message
         })
-    } catch (error) {
-        
     }
 }
 
@@ -41,7 +39,6 @@ exports.failedPayment = async (req, res) => {
         let { payId } = req.query
         res.json({
             "Message": "Payment failed. Try again",
-
         })
     } catch (error) {
         

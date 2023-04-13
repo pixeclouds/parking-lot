@@ -19,8 +19,6 @@ exports.reserve = async (req, res) => {
 }
 
 
-
-
 exports.checkIn = async (req, res) => {
     try {
         let { reservationId, lat, long } = req.query
@@ -59,13 +57,11 @@ exports.checkOut = async (req, res) => {
     try {
         let { reservationId } = req.query
         let checkout = await checkOutFromSpace(reservationId)
+
         // calculate amount to be paid by user
         let duration = Math.floor((checkout.endTime - checkout.startTime)/60000)  // duration in minutes
         let unitAmount = process.env.UNIT_SPACE_BILL
         let amount = duration * unitAmount
-
-        
-        console.log("duration", duration, "amount", amount)
 
         // initialize and write record to payment
         let payment = await initializePay(reservationId, amount, duration)
@@ -100,20 +96,3 @@ exports.exit = async (req, res) => {
         
     }
 }
-
-// exports.checkOut = async (req, res) => {
-//     try {
-//         let { reservationId } = req.query
-//         let checkout = await get(reservationId)
-//         // update space availabilty status
-//         let spaceId =  checkout.parkingSpaceId
-//         await updateSpaceStatus(spaceId, true)
-//         // redirect to make payment
-//         console.log("redirecting to payments", checkout)
-//         res.json({
-//             "message": "check out success. "
-//         })
-//     } catch (err) {
-//         res.json({ Error: err.Message})
-//     }
-// }

@@ -6,9 +6,9 @@ const { hashPassword, comparePasswords } = require("../../utils/hasher")
 const { sendVerificationMail } = require("../../services/email/index.js")
 
 exports.signin = async (req, res ) => {
-    let { email, password } = req.body
-
     try {
+        let { email, password } = req.body
+
         //validate inputs
         let isValid = await validateInput(userValidatorSchema, { email, password})
         if (!isValid){
@@ -43,9 +43,9 @@ exports.signin = async (req, res ) => {
 }
 
 exports.signup = async (req, res) => {
-    let { firstname, email, password } = req.body
-
     try {
+        let { firstname, email, password } = req.body
+
         //validate input
         let isValid = await validateInput(userValidatorSchema, { email, password})
         if (!isValid){
