@@ -12,6 +12,6 @@ exports.authenticate = async (req, res, next) => {
         req.user = user._id
         next()
     } catch (err) {
-        res.status(401).send(" Cannot aceess the resource. Login instead")
+        res.status(403).send("Access Denied. Login instead")
     }
 }

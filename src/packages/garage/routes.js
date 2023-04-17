@@ -1,9 +1,10 @@
 const garageRouter = require("express").Router()
 const { getGarages, getNearby, getAvailableSpaces } = require("./controller")
+const { authenticate } = require("../../middleware/auth")
 
-// spaceRouter.get("/spaces", getSpaces)
-garageRouter.get("/garages", getGarages)
-garageRouter.get("/garages/nearby", getNearby)
-garageRouter.get("/garages/spaces", getAvailableSpaces)
+
+garageRouter.get("/garages", authenticate, getGarages)
+garageRouter.get("/garages/nearby", authenticate, getNearby)
+garageRouter.get("/garages/spaces", authenticate, getAvailableSpaces)
 
 module.exports = garageRouter
