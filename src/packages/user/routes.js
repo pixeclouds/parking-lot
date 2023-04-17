@@ -3,7 +3,7 @@ const { signup, signin, verifyAccount, resendVerificationMail } = require("./con
 
 userRouter.post('/user/signin', signin)
 userRouter.post('/user/signup', signup)
-userRouter.get('/user/verify-mail/:link', verifyAccount)
+userRouter.post('/user/verify-mail/:link', verifyAccount)
 userRouter.post('/user/reverify-mail', resendVerificationMail)
 
 
